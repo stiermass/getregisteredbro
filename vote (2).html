@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virginia Voter Registration — Are You Eligible?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0B1F3A;
+    --red: #E8312A;
+    --orange: #FF8C42;
+    --light: #EAF1F8;
+    --muted: #8FA5BB;
+    --white: #ffffff;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--navy);
+    font-family: 'Barlow', sans-serif;
+    color: var(--white);
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(232,49,42,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 10% 80%, rgba(255,140,66,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 48px 40px 40px;
+    max-width: 520px;
+    width: 100%;
+    position: relative;
+    backdrop-filter: blur(10px);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 40px; right: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--red), var(--orange));
+    border-radius: 0 0 3px 3px;
+  }
+
+  .step { display: none; animation: fadeIn 0.35s ease; }
+  .step.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 16px;
+  }
+
+  .question {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 8vw, 52px);
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 14px;
+  }
+
+  .question span { color: var(--red); }
+
+  .sub {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 36px;
+  }
+
+  .sub strong { color: var(--white); font-weight: 600; }
+
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 18px 24px;
+    border-radius: 12px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    text-align: left;
+    position: relative;
+    text-decoration: none;
+  }
+
+  .btn:active { transform: scale(0.98); }
+
+  .btn-yes {
+    background: var(--red);
+    color: var(--white);
+  }
+  .btn-yes:hover { background: #c9271f; }
+
+  .btn-no {
+    background: rgba(255,255,255,0.06);
+    color: var(--white);
+    border-color: rgba(255,255,255,0.15);
+  }
+  .btn-no:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25); }
+
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    font-size: 18px;
+  }
+  .btn-primary:hover { background: #c9271f; }
+  .btn-primary .arrow { font-size: 22px; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border-color: rgba(255,255,255,0.1);
+    font-size: 14px;
+    padding: 14px 24px;
+    text-align: center;
+  }
+  .btn-secondary:hover { color: var(--white); border-color: rgba(255,255,255,0.25); }
+
+  /* outcome screens */
+  .outcome-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    margin-bottom: 24px;
+  }
+
+  .icon-go { background: rgba(232,49,42,0.15); }
+  .icon-good { background: rgba(46,196,110,0.15); }
+  .icon-maybe { background: rgba(255,140,66,0.15); }
+
+  .deadline-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,140,66,0.12);
+    border: 1px solid rgba(255,140,66,0.3);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--orange);
+    margin-bottom: 24px;
+  }
+
+  .footer-note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 24px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    margin-top: 20px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    background: none;
+    border: none;
+    font-family: inherit;
+    padding: 0;
+  }
+  .back-link:hover { color: var(--white); }
+
+  @media (max-width: 480px) {
+    .card { padding: 40px 24px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- Step 1: Age check -->
+  <div class="step active" id="s1">
+    <div class="question">Will you be <span>18</span> by November 4, 2025?</div>
+    <div class="sub">Virginia law allows you to vote in this spring election if you will turn 18 by the <strong>November general election</strong> — even if you're 17 today.</div>
+    <div class="btn-group">
+      <button class="btn btn-yes" onclick="go('s2')">✓ &nbsp; Yes — I'm 18, or I'll turn 18 by November 4</button>
+      <button class="btn btn-no" onclick="go('not-eligible')">✗ &nbsp; No — I won't be 18 by November 4</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Registration check -->
+  <div class="step" id="s2">
+    <div class="eyebrow">Great — you're eligible!</div>
+    <div class="question">Have you <span>registered</span> to vote in Virginia?</div>
+    <div class="sub">If you've registered before — even at a previous address — you may already be in the system. Not sure? You can check online.</div>
+    <div class="btn-group">
+      <button class="btn btn-yes" onclick="go('already-registered')">✓ &nbsp; Yes, I'm registered</button>
+      <button class="btn btn-no" onclick="go('need-to-register')">✗ &nbsp; No, I need to register</button>
+      <button class="btn btn-no" onclick="go('not-sure')">? &nbsp; I'm not sure</button>
+    </div>
+    <button class="back-link" onclick="go('s1')">← Back</button>
+  </div>
+
+  <!-- Outcome: Need to register -->
+  <div class="step" id="need-to-register">
+    <div class="outcome-icon icon-go">🗳️</div>
+    <div class="deadline-pill">⏰ Deadline: April 14, 2025</div>
+    <div class="question">Let's get you <span>registered.</span></div>
+    <div class="sub">It only takes a few minutes. You'll need your Virginia ID or the last 4 digits of your Social Security number. Register before <strong>April 14</strong> to vote on April 21.</div>
+    <div class="btn-group">
+      <a class="btn btn-primary" href="https://vote.elections.virginia.gov/Registration" target="_blank">
+        Register to vote now <span class="arrow">→</span>
+      </a>
+    </div>
+    <div class="footer-note">After registering, come back here — your confirmation usually arrives within a few days.</div>
+    <button class="back-link" onclick="go('s2')">← Back</button>
+  </div>
+
+  <!-- Outcome: Not sure -->
+  <div class="step" id="not-sure">
+    <div class="outcome-icon icon-maybe">🔍</div>
+    <div class="question">Let's <span>check.</span></div>
+    <div class="sub">You can look up your registration status on the Virginia voter portal. If you're not registered, you can register right there — <strong>before April 14.</strong></div>
+    <div class="btn-group">
+      <a class="btn btn-primary" href="https://vote.elections.virginia.gov/VoterInformation" target="_blank">
+        Check my registration status <span class="arrow">→</span>
+      </a>
+    </div>
+    <button class="back-link" onclick="go('s2')">← Back</button>
+  </div>
+
+  <!-- Outcome: Already registered -->
+  <div class="step" id="already-registered">
+    <div class="outcome-icon icon-good">🫡</div>
+    <div class="question">A+ on your civic <span>engagement.</span></div>
+    <div class="sub">Go about your business, young patriot.</div>
+    <button class="back-link" onclick="go('s2')">← Back</button>
+  </div>
+
+  <!-- Outcome: Not eligible -->
+  <div class="step" id="not-eligible">
+    <div class="outcome-icon icon-maybe">😔</div>
+    <div class="question">It's giving <span>{disappointment}.</span></div>
+    <div class="sub">No voting for you this year, but there are plenty of other ways to get involved and have your voice be heard. Volunteer for a cause you care about, attend a rally or protest, <a href="https://vote.elections.virginia.gov/Registration/DmvLookup" target="_blank" style="color: var(--orange); text-decoration: underline; text-underline-offset: 3px;">get pre-registered to vote</a>, or even just start a conversation with a person who has a different life or background from yours. Civic engagement takes many forms, and your voice matters!</div>
+    <button class="back-link" onclick="go('s1')">← Back</button>
+  </div>
+
+</div>
+
+<script>
+  function go(id) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+</script>
+</body>
+</html>
